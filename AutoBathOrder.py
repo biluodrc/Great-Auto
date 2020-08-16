@@ -1,7 +1,7 @@
 # -*- coding = utf-8 -*-
 # @time: 2020/8/11 10:03
 # Author: Biluo
-# @File: bathOrder.py
+# @File: AutoBathOrder.py
 
 from selenium import webdriver
 import re
