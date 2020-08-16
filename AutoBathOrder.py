@@ -73,7 +73,7 @@ def yuyueFunc():
 
             # 点击警告弹窗
             alert = broswer.switch_to.alert
-            alert_text = alert.text()
+            alert_text = alert.text
             if alert_text == '不要重复预约！':
                 break
             else:
