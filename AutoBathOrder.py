@@ -16,7 +16,7 @@ from time import sleep
 name = '邓若琛'
 phnumber = '17808073264'
 id = '55180432'
-sex = 1
+sex = 0
 
 # 所有时间的优先序列，共十三个选择 [1,13]
 # 1/  11:00-11:45
@@ -52,11 +52,12 @@ def yuyueFunc():
     choosetimeA = broswer.find_elements_by_css_selector('tbody tr')
     # 遍历所有预约时间，并判断是否有余量
     for i in range(0 , len(timeidxs)):
-        maleA = choosetimeA[timeidxs[i]+1].find_element_by_css_selector('td a')
-        text = maleA.text
+        print(choosetimeA[timeidxs[i]+1].text)
+        maleA = choosetimeA[timeidxs[i]+1].find_elements_by_css_selector('td')
+        text = maleA[1-sex].text
         remainNum = int(re.match(pattern, text).group(1))
         if (remainNum > 0):
-            maleA.click()
+            maleA[1-sex].click()
             # 填写方框中的信息
             input = broswer.find_elements_by_css_selector('tbody tr td input')
             input[0].send_keys(name)
