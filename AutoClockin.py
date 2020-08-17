@@ -6,7 +6,9 @@
 from selenium import webdriver
 from time import sleep
 
-username = 'username'
+# username: 打卡网站的用户名
+# password: 密码
+username = 'username' 
 password = 'password'
 
 broswer = webdriver.Chrome()
