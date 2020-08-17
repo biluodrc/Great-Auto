@@ -6,8 +6,8 @@
 from selenium import webdriver
 from time import sleep
 
-username = 'dengrc5518'
-password = 'drc991102'
+username = 'username'
+password = 'password'
 
 broswer = webdriver.Chrome()
 broswer.get('https://ehall.jlu.edu.cn/infoplus/form/BKSMRDK/start')
