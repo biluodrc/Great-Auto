@@ -1,97 +1,67 @@
 # -*- coding = utf-8 -*-
-# @time: 2020/8/11 10:03
+# @time: 2020/8/17 20:45
 # Author: Biluo
-# @File: AutoBathOrder.py
+# @File: AutoClockin.py
 
 from selenium import webdriver
-import re
-import threading
 from time import sleep
+import datetime
 
-# 相关信息
-# name: 姓名
-# phnumber: 手机号
-# id: 学号
-# sex: 0表示女生 1表示男生
-name = '邓若琛'
-phnumber = '17808073264'
-id = '55180432'
-sex = 0
+username = 'username' # 账户
+password = 'password' # 密码
 
-# 所有时间的优先序列，共十三个选择 [1,13]
-# 1/  11:00-11:45
-# 2/  11:45-12:30
-# 3/  12:30-13:15
-# 4/  13:15-14:00
-# 5/  14:00-14:45
-# 6/  14:45-15:30
-# 7/  15:30-16:15
-# 8/  16:15-17:00
-# 9/  17:00-17:45
-# 10/ 18:00-18:45
-# 11/ 18:45-19:30
-# 12/ 19:30-20:15
-# 13/ 20:15-21:00
-timeidxs = [13 , 2 , 10 , 1 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 11 , 12]
+broswer = webdriver.Chrome()
+broswer.get('https://ehall.jlu.edu.cn/infoplus/form/BKSMRDK/start')
 
-class YuYueThread (threading.Thread):
-    def __init__(self, threadID):
-        threading.Thread.__init__(self)
-        self.threadID = threadID
-    def run(self):
-        print ("开始线程：" + str(self.threadID))
-        yuyueFunc()
-        print ("退出线程：" + str(self.threadID))
+# login
+usernameB = broswer.find_element_by_id('username')
+passwordB = broswer.find_element_by_id('password')
+loginB = broswer.find_element_by_id('login-submit')
+usernameB.send_keys(username)
+passwordB.send_keys(password)
+loginB.click()
+sleep(3)
 
-def yuyueFunc():
-    pattern = re.compile('^\d{2}:\d{2}-\d{2}:\d{2}\(余：(\d{1,3})\)$')
-    broswer = webdriver.Chrome()
-    broswer.get('http://hqserver.jlu.edu.cn/yuci.php?xy=addxiyu2&id=8')
-    a = broswer.find_element_by_css_selector('tbody tr td a')
-    a.click()
-    choosetimeA = broswer.find_elements_by_css_selector('tbody tr')
-    # 遍历所有预约时间，并判断是否有余量
-    for i in range(0 , len(timeidxs)):
-        print(choosetimeA[timeidxs[i]+1].text)
-        maleA = choosetimeA[timeidxs[i]+1].find_elements_by_css_selector('td')
-        text = maleA[1-sex].text
-        remainNum = int(re.match(pattern, text).group(1))
-        if (remainNum > 0):
-            maleA[1-sex].click()
-            # 填写方框中的信息
-            input = broswer.find_elements_by_css_selector('tbody tr td input')
-            input[0].send_keys(name)
-            input[1].send_keys(phnumber)
-            input[2].send_keys(id)
+# clock in
+# 选择校区
+options = broswer.find_elements_by_tag_name('option')
+for i in range(len(options)):
+    if (options[i].text == '-请选择-'):
+        options[i].click()
+    if (options[i].text == '中心校区'):
+        options[i].click()
+        break
+# 选择寝室位置
+options = broswer.find_elements_by_tag_name('option')
+for i in range(len(options)):
+    if (options[i].text == '-请选择-'):
+        options[i].click()
+    if (options[i].text == '北苑1公寓'):
+        options[i].click()
+        break
+# 输入寝室号
+qsI = broswer.find_element_by_name('fieldSQqsh')
+qsI.clear()
+qsI.send_keys('2076')
 
-            # 选择性别
-            sexB = broswer.find_elements_by_css_selector('tbody tr td label input')
-            sexB[sex].click()
-
-            # 提交信息
-            submitB = broswer.find_element_by_id('Submit')
-            submitB.click()
-
-            # 点击警告弹窗
-            alert = broswer.switch_to.alert
-            alert_text = alert.text
-            if alert_text == '不要重复预约！':
-                break
-            else:
-                alert.accept()
-
-def main():
-    # 创建预约线程
-    thread1 = YuYueThread(1)
-    thread2 = YuYueThread(2)
-
-    # 开启预约线程
-    thread1.start()
-    thread2.start()
-    thread1.join()
-    thread2.join()
-
-    print ("退出主线程")
-
-if __name__ == '__main__':
-    main()
+hour = int(datetime.datetime.now().strftime('%H'))
+labels = broswer.find_elements_by_tag_name('label')
+if (hour == 7):
+    for label in labels:
+        if (label.text == '正常'):
+            label.click()
+if (hour == 11):
+    for label in labels:
+        if (label.text == '正常'):
+            label.click()
+if (hour == 17):
+    for label in labels:
+        if (label.text == '正常'):
+            label.click()
+# 提交
+submitB = broswer.find_elements_by_class_name('command_button_content')
+submitB[0].click()
+sleep(3)
+temB = broswer.find_element_by_class_name('dialog_footer')
+okB = temB.find_element_by_tag_name('button')
+okB.click()
