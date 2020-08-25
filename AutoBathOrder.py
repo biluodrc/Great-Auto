@@ -7,8 +7,8 @@ from selenium import webdriver
 from time import sleep
 import datetime
 
-username = 'username' # 账户
-password = 'password' # 密码
+username = 'dengrc5518'
+password = 'drc991102'
 
 broswer = webdriver.Chrome()
 broswer.get('https://ehall.jlu.edu.cn/infoplus/form/BKSMRDK/start')
@@ -44,20 +44,14 @@ qsI = broswer.find_element_by_name('fieldSQqsh')
 qsI.clear()
 qsI.send_keys('2076')
 
+# 选择体温正常
 hour = int(datetime.datetime.now().strftime('%H'))
 labels = broswer.find_elements_by_tag_name('label')
-if (hour == 7):
+if (hour == 7 or hour == 11 or hour ==  17):
     for label in labels:
-        if (label.text == '正常'):
+        if (label.text == '正常 '):
             label.click()
-if (hour == 11):
-    for label in labels:
-        if (label.text == '正常'):
-            label.click()
-if (hour == 17):
-    for label in labels:
-        if (label.text == '正常'):
-            label.click()
+
 # 提交
 submitB = broswer.find_elements_by_class_name('command_button_content')
 submitB[0].click()
@@ -65,3 +59,6 @@ sleep(3)
 temB = broswer.find_element_by_class_name('dialog_footer')
 okB = temB.find_element_by_tag_name('button')
 okB.click()
+
+# 关闭
+broswer.close()
